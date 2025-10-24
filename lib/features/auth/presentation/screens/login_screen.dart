@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foodai/shared/widget/custom_filled_button.dart';
-import 'package:foodai/shared/widget/custom_text_form_field.dart';
+import 'package:foodai/shared/widget/widgets.dart';
 
 class LoginScreen extends ConsumerWidget {
 
@@ -70,11 +69,14 @@ class LoginScreen extends ConsumerWidget {
                 const SizedBox(height: 13),
                 _GoogleLoginButton(),
                 const SizedBox(height: 20),
-                Text ("¿Olvidaste tu contraseña?", style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold
-                ),)
+                Text (
+                  "¿Olvidaste tu contraseña?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
               ],
             ),
           ),
