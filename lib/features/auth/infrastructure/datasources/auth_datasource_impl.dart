@@ -24,22 +24,33 @@ class AuthDatasourceImpl extends AuthDatasource {
 
   @override
   Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      
+      // Si el usuario cancela el popup
+      if (googleUser == null) {
+        throw Exception('Google sign-in cancelado por el usuario');
+      }
 
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
 
-    final credential = GoogleAuthProvider.credential(
-      idToken: googleAuth.idToken,
-      accessToken: googleAuth.accessToken,
-    );
-
-    return await _firebaseAuth.signInWithCredential(credential);
+      return await _firebaseAuth.signInWithCredential(credential);
+    } catch (e) {
+      throw Exception('Error en Google Sign-In: $e');
+    }
   }
   
   @override
   Future<void> signOut() async{
-    await _firebaseAuth.signOut();
-    await _googleSignIn.signOut();
+      await Future.wait([
+      _firebaseAuth.signOut(),
+      _googleSignIn.signOut(),
+      _googleSignIn.disconnect(), // Desconecta completamente la cuenta
+    ]);
   }
 }

@@ -20,7 +20,7 @@ final goRouterProvider = Provider((ref) {
         builder:(context, state, child) => MainScreen(child: child),
         routes: [
           GoRoute(
-            path: '/',
+            path: '/home',
             builder: (context, state) => const HomeScreen(),
           ),
           GoRoute(

@@ -15,7 +15,7 @@ class CustomBottomAppBar extends ConsumerWidget {
       currentIndex: currentIndex,
       onTap: (index) {
         ref.read(bottomNavIndexProvider.notifier).state = index;
-        if (index == 0) context.go('/');
+        if (index == 0) context.go('/home');
         if (index == 1) context.go('/camera');
         if (index == 2) context.go('/profile');
       },
