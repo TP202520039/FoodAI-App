@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foodai/features/auth/infrastructure/datasources/auth_datasource_impl.dart';
+import 'package:foodai/features/auth/infrastructure/repositories/auth_repository_impl.dart';
 import 'package:foodai/shared/widget/widgets.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -146,6 +148,11 @@ class _GoogleLoginButton extends ConsumerWidget {
         buttonColor: Colors.white,
         fontColor: Colors.black,
         imagePath: 'assets/images/logo_google.png',
+        onPressed: () {
+          // For testing purposes
+          final a = AuthRepositoryImpl(AuthDatasourceImpl());
+          a.signInWithGoogle();
+        },
         // onPressed: loginForm.isPosting
         //     ? null
         //     : ref.read(loginFormProvider.notifier).onFormSubmit,
