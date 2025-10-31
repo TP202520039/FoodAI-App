@@ -10,15 +10,15 @@ class CustomBottomAppBar extends ConsumerWidget {
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: 'Inicio',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.camera),
-          label: 'Camera',
+          label: 'Cámara',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: 'Profile',
+          label: 'Perfil',
         ),
       ],
       backgroundColor: const Color(0xFFF5F2E8),
