@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 final goRouterProvider = Provider((ref) {
   
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/main',
     routes: [
       GoRoute(
         path: '/login',
