@@ -1,8 +1,8 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foodai/features/auth/infrastructure/datasources/auth_datasource_impl.dart';
-import 'package:foodai/features/auth/infrastructure/repositories/auth_repository_impl.dart';
+import 'package:foodai/features/auth/presentation/providers/auth_provider.dart';
 import 'package:foodai/shared/widget/widgets.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -11,6 +11,19 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Mostrar error si existe
+    ref.listen(loginFormProvider, (previous, next) {
+      if (next.errorMessage != null && next.errorMessage!.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: Colors.red.shade400,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -92,13 +105,13 @@ class LoginScreen extends ConsumerWidget {
 class _EmailInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
     
     return CustomTextFormField(
       label: 'Correo Electrónico',
-      keyboardType: TextInputType.text,
-      // onChanged: ref.read(loginFormProvider.notifier).onUsernameChanged,
-      // errorMessage:
-      //     loginForm.isFormPosted ? loginForm.username.errorMessage : null,
+      keyboardType: TextInputType.emailAddress,
+      onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
+      errorMessage: loginForm.isFormPosted ? loginForm.emailError : null,
     );
   }
 }
@@ -106,14 +119,13 @@ class _EmailInput extends ConsumerWidget {
 class _PasswordInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
     
     return CustomTextFormField(
       label: 'Contraseña',
-      keyboardType: TextInputType.text,
       obscureText: true,
-      // onChanged: ref.read(loginFormProvider.notifier).onUsernameChanged,
-      // errorMessage:
-      //     loginForm.isFormPosted ? loginForm.username.errorMessage : null,
+      onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+      errorMessage: loginForm.isFormPosted ? loginForm.passwordError : null,
     );
   }
 }
@@ -121,16 +133,16 @@ class _PasswordInput extends ConsumerWidget {
 class _LoginButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final loginForm = ref.watch(loginFormProvider);
+    final loginForm = ref.watch(loginFormProvider);
 
     return SizedBox(
       width: double.infinity,
       child: CustomFilledButton(
-        text: 'INICIAR SESIÓN',
+        text: loginForm.isPosting ? 'INICIANDO SESIÓN...' : 'INICIAR SESIÓN',
         buttonColor: const Color(0xFF7D8B4E),
-        // onPressed: loginForm.isPosting
-        //     ? null
-        //     : ref.read(loginFormProvider.notifier).onFormSubmit,
+        onPressed: loginForm.isPosting
+            ? null
+            : ref.read(loginFormProvider.notifier).onFormSubmit,
       ),
     );
   }
@@ -139,7 +151,7 @@ class _LoginButton extends ConsumerWidget {
 class _GoogleLoginButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final loginForm = ref.watch(loginFormProvider);
+    final loginForm = ref.watch(loginFormProvider);
 
     return SizedBox(
       width: double.infinity,
@@ -148,17 +160,14 @@ class _GoogleLoginButton extends ConsumerWidget {
         buttonColor: Colors.white,
         fontColor: Colors.black,
         imagePath: 'assets/images/logo_google.png',
-        onPressed: () {
-          // For testing purposes
-          final a = AuthRepositoryImpl(AuthDatasourceImpl());
-          a.signInWithGoogle();
-        },
-        // onPressed: loginForm.isPosting
-        //     ? null
-        //     : ref.read(loginFormProvider.notifier).onFormSubmit,
+        onPressed: loginForm.isPosting
+            ? null
+            : ref.read(loginFormProvider.notifier).signInWithGoogle,
       ),
     );
   }
 }
+
+
 
 

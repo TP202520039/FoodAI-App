@@ -7,12 +7,18 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this._authDatasource);
 
   @override
-  Future<UserCredential> signInWithEmailPassword(String email, String password) async {
+  Stream<User?> get authStateChanges => _authDatasource.authStateChanges;
+
+  @override
+  User? get currentUser => _authDatasource.currentUser;
+
+  @override
+  Future<User> signInWithEmailPassword(String email, String password) async {
     return await _authDatasource.signInWithEmailPassword(email, password);
   }
 
   @override
-  Future<UserCredential> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
     return await _authDatasource.signInWithGoogle();
   }
   
