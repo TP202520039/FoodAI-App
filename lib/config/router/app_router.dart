@@ -3,12 +3,13 @@ import 'package:foodai/features/auth/presentation/screens/login_screen.dart';
 import 'package:foodai/features/main/screens/main_screen.dart';
 import 'package:foodai/features/home/presentation/screens/screens.dart';
 import 'package:foodai/features/profile/presentation/screens/screens.dart';
+import 'package:foodai/features/camera/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
 final goRouterProvider = Provider((ref) {
   
   return GoRouter(
-    initialLocation: '/profile',
+    initialLocation: '/login',
     routes: [
       GoRoute(
         path: '/login',
@@ -25,6 +26,10 @@ final goRouterProvider = Provider((ref) {
           GoRoute(
             path: '/profile',
             builder: (context, state) => const ProfileScreen(),
+          ),
+          GoRoute(
+            path: '/camera',
+            builder: (context, state) => const CameraScreen(),
           ),
         ]
       ),

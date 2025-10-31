@@ -1,0 +1,1 @@
+export 'bottom_nav_index_provider.dart';
