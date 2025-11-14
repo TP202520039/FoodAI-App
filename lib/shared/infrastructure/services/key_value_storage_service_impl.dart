@@ -10,7 +10,6 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
   @override
   Future<T?> getValue<T>(String key) async {
     final prefs = await getSharedPrefs();
-    final value = prefs.get(key);
 
     if (T == int) {
       return prefs.getInt(key) as T?;

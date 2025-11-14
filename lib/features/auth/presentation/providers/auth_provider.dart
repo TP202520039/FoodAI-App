@@ -2,11 +2,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodai/features/auth/domain/domain.dart';
-import 'package:foodai/features/auth/domain/entities/auth_exceptions.dart';
-import 'package:foodai/features/auth/domain/entities/auth_state.dart';
-import 'package:foodai/features/auth/domain/entities/login_form_state.dart';
 import 'package:foodai/features/auth/infrastructure/datasources/auth_datasource_impl.dart';
 import 'package:foodai/features/auth/infrastructure/repositories/auth_repository_impl.dart';
+import 'package:foodai/shared/infrastructure/services/key_value_service.dart';
 
 // ============================================================================
 // PROVIDER DEL REPOSITORIO
@@ -24,15 +22,17 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Provider del estado de autenticación (notifier)
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
-  return AuthNotifier(authRepository);
+  final keyValueStorageService = ref.read(keyValueStorageServiceProvider);
+  return AuthNotifier(authRepository, keyValueStorageService);
 });
 
 /// Notificador del estado de autenticación
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
+  final KeyValueStorageService _keyValueStorageService;
   StreamSubscription<User?>? _authSubscription;
 
-  AuthNotifier(this._authRepository) : super(const AuthState.checking()) {
+  AuthNotifier(this._authRepository, this._keyValueStorageService) : super(const AuthState.checking()) {
     _init();
   }
 
@@ -53,6 +53,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(status: AuthStatus.checking);
       final user = await _authRepository.signInWithEmailPassword(email, password);
       state = AuthState.authenticated(user);
+      // Guardar token DESPUÉS de actualizar el estado
+      final token = await user.getIdToken();
+      if (token != null) {
+        await _keyValueStorageService.setKeyValue("token", token);
+      }
     } on AuthException catch (e) {
       state = AuthState.unauthenticated(e.message);
       rethrow;
@@ -68,6 +73,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(status: AuthStatus.checking);
       final user = await _authRepository.signInWithGoogle();
       state = AuthState.authenticated(user);
+      // Guardar token DESPUÉS de actualizar el estado
+      final token = await user.getIdToken();
+      if (token != null) {
+        await _keyValueStorageService.setKeyValue("token", token);
+        print("✅ Token guardado correctamente");
+      }
     } on AuthException catch (e) {
       state = AuthState.unauthenticated(e.message);
       rethrow;
@@ -82,6 +93,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       await _authRepository.signOut();
       state = const AuthState.unauthenticated();
+      // Remover token DESPUÉS de actualizar el estado
+      await _keyValueStorageService.removeKey("token");
+      print("✅ Sesión cerrada y token eliminado");
     } catch (e) {
       state = AuthState.unauthenticated('Error al cerrar sesión: $e');
     }

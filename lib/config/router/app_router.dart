@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foodai/features/auth/domain/entities/auth_state.dart';
 import 'package:foodai/features/auth/presentation/providers/auth_provider.dart';
 import 'package:foodai/features/auth/presentation/screens/login_screen.dart';
 import 'package:foodai/features/main/screens/main_screen.dart';
@@ -7,12 +9,34 @@ import 'package:foodai/features/profile/presentation/screens/screens.dart';
 import 'package:foodai/features/camera/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
+// Notifier para actualizar GoRouter cuando cambia el estado de auth
+final goRouterNotifierProvider = Provider<GoRouterNotifier>((ref) {
+  return GoRouterNotifier(ref);
+});
+
+class GoRouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  GoRouterNotifier(this._ref) {
+    _ref.listen<AuthState>(
+      authStateProvider,
+      (previous, next) {
+        if (previous?.status != next.status) {
+          notifyListeners();
+        }
+      },
+    );
+  }
+}
+
 final goRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  final notifier = ref.watch(goRouterNotifierProvider);
   
   return GoRouter(
+    refreshListenable: notifier,
     initialLocation: '/login',
     redirect: (context, state) {
+      final authState = ref.read(authStateProvider);
       final isLoggedIn = authState.isAuthenticated;
       final isGoingToLogin = state.matchedLocation == '/login';
       final isChecking = authState.isChecking;
