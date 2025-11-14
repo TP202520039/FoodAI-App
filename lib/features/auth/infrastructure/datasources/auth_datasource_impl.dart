@@ -70,6 +70,19 @@ class AuthDatasourceImpl extends AuthDatasource {
       if (userCredential.user == null) {
         throw UnknownAuthException('No se pudo obtener la información del usuario');
       }
+
+      String? firebaseToken = await userCredential.user!.getIdToken();
+      // ✅ Validar formato
+      List<String> parts = firebaseToken!.split('.');
+      
+      print('━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      print('✅ Token obtenido correctamente');
+      print('📏 Longitud: ${firebaseToken.length} caracteres');
+      print('🔢 Partes: ${parts.length}/3');
+      print('📝 Header length: ${parts[0]}');
+      print('📝 Payload length: ${parts[1]}');
+      print('📝 Signature length: ${parts[2]}');
+      print('━━━━━━━━━━━━━━━━━━━━━━━━━━');
       
       return userCredential.user!;
     } on GoogleSignInCancelledException {
