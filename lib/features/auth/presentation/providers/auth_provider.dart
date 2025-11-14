@@ -3,16 +3,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodai/features/auth/domain/domain.dart';
 import 'package:foodai/features/auth/infrastructure/datasources/auth_datasource_impl.dart';
+import 'package:foodai/features/auth/infrastructure/datasources/auth_custom_datasource_impl.dart';
 import 'package:foodai/features/auth/infrastructure/repositories/auth_repository_impl.dart';
+import 'package:foodai/features/auth/infrastructure/repositories/auth_custom_repository_impl.dart';
 import 'package:foodai/shared/infrastructure/services/key_value_service.dart';
 
 // ============================================================================
 // PROVIDER DEL REPOSITORIO
 // ============================================================================
 
-/// Provider del repositorio de autenticación
+/// Provider del repositorio de autenticación Firebase
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepositoryImpl(AuthDatasourceImpl());
+});
+
+/// Provider del repositorio de autenticación custom (backend)
+final authCustomRepositoryProvider = Provider<AuthCustomRepository>((ref) {
+  final storageService = ref.read(keyValueStorageServiceProvider);
+  return AuthCustomRepositoryImpl(
+    dataSource: AuthCustomDataSourceImpl(storageService: storageService),
+  );
 });
 
 // ============================================================================
@@ -22,17 +32,19 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Provider del estado de autenticación (notifier)
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
+  final authCustomRepository = ref.read(authCustomRepositoryProvider);
   final keyValueStorageService = ref.read(keyValueStorageServiceProvider);
-  return AuthNotifier(authRepository, keyValueStorageService);
+  return AuthNotifier(authRepository, authCustomRepository, keyValueStorageService);
 });
 
 /// Notificador del estado de autenticación
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
+  final AuthCustomRepository _authCustomRepository;
   final KeyValueStorageService _keyValueStorageService;
   StreamSubscription<User?>? _authSubscription;
 
-  AuthNotifier(this._authRepository, this._keyValueStorageService) : super(const AuthState.checking()) {
+  AuthNotifier(this._authRepository, this._authCustomRepository, this._keyValueStorageService) : super(const AuthState.checking()) {
     _init();
   }
 
@@ -52,11 +64,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = state.copyWith(status: AuthStatus.checking);
       final user = await _authRepository.signInWithEmailPassword(email, password);
-      state = AuthState.authenticated(user);
-      // Guardar token DESPUÉS de actualizar el estado
+      
+      // Obtener y guardar token
       final token = await user.getIdToken();
       if (token != null) {
         await _keyValueStorageService.setKeyValue("token", token);
+        
+        // Sincronizar con backend
+        try {
+          final foodAiUser = await _authCustomRepository.sync(token);
+          state = AuthState.authenticated(user, foodAiUser: foodAiUser);
+          print("✅ Usuario sincronizado con backend: ${foodAiUser.email}");
+        } catch (e) {
+          print("⚠️ Error al sincronizar con backend: $e");
+          // Continuar con login aunque falle la sincronización
+          state = AuthState.authenticated(user);
+        }
+      } else {
+        state = AuthState.authenticated(user);
       }
     } on AuthException catch (e) {
       state = AuthState.unauthenticated(e.message);
@@ -72,12 +97,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = state.copyWith(status: AuthStatus.checking);
       final user = await _authRepository.signInWithGoogle();
-      state = AuthState.authenticated(user);
-      // Guardar token DESPUÉS de actualizar el estado
+      
+      // Obtener y guardar token
       final token = await user.getIdToken();
       if (token != null) {
         await _keyValueStorageService.setKeyValue("token", token);
         print("✅ Token guardado correctamente");
+        
+        // Sincronizar con backend
+        try {
+          final foodAiUser = await _authCustomRepository.sync(token);
+          state = AuthState.authenticated(user, foodAiUser: foodAiUser);
+          print("✅ Usuario sincronizado con backend: ${foodAiUser.email}");
+        } catch (e) {
+          print("⚠️ Error al sincronizar con backend: $e");
+          // Continuar con login aunque falle la sincronización
+          state = AuthState.authenticated(user);
+        }
+      } else {
+        state = AuthState.authenticated(user);
       }
     } on AuthException catch (e) {
       state = AuthState.unauthenticated(e.message);

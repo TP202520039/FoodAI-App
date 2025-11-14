@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:foodai/features/auth/domain/entities/foodai_user.dart';
 
 /// Estado de autenticación de la aplicación
 class AuthState {
   final User? user;
+  final FoodAiUser? foodAiUser;
   final AuthStatus status;
   final String? errorMessage;
 
   const AuthState({
     this.user,
+    this.foodAiUser,
     this.status = AuthStatus.checking,
     this.errorMessage,
   });
@@ -16,8 +19,8 @@ class AuthState {
   const AuthState.checking() : this(status: AuthStatus.checking);
 
   // Usuario autenticado
-  const AuthState.authenticated(User user) 
-      : this(user: user, status: AuthStatus.authenticated);
+  const AuthState.authenticated(User user, {FoodAiUser? foodAiUser}) 
+      : this(user: user, foodAiUser: foodAiUser, status: AuthStatus.authenticated);
 
   // Usuario no autenticado
   const AuthState.unauthenticated([String? errorMessage]) 
@@ -26,11 +29,13 @@ class AuthState {
   // Copiado con modificaciones
   AuthState copyWith({
     User? user,
+    FoodAiUser? foodAiUser,
     AuthStatus? status,
     String? errorMessage,
   }) {
     return AuthState(
       user: user ?? this.user,
+      foodAiUser: foodAiUser ?? this.foodAiUser,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
     );
