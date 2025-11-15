@@ -24,6 +24,11 @@ class AuthCustomDataSourceImpl extends AuthCustomDataSource {
   @override
   Future<FoodAiUser> sync(String token) async {
     try {
+      final to = token.split('.'); // Decodificar token JWT
+      print('${to[0]}');
+      print('${to[1]}');
+      print('${to[2]}');
+
       final response = await dio.post(
         '/auth/sync',
         data: {'idToken': token}

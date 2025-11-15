@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodai/features/auth/domain/entities/auth_state.dart';
 import 'package:foodai/features/auth/presentation/providers/auth_provider.dart';
 import 'package:foodai/features/auth/presentation/screens/login_screen.dart';
+import 'package:foodai/features/home/domain/entities/food_item.dart';
 import 'package:foodai/features/main/screens/main_screen.dart';
 import 'package:foodai/features/home/presentation/screens/screens.dart';
 import 'package:foodai/features/profile/presentation/screens/screens.dart';
@@ -69,6 +70,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/home',
             builder: (context, state) => const HomeScreen(),
+            routes: [
+              GoRoute(
+                path: 'food-item-detail',
+                builder: (context, state) {
+                  final foodItem = state.extra as FoodItem;
+                  return FoodItemDetailScreen(foodItem: foodItem);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/profile',
