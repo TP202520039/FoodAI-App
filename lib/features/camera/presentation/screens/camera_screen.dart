@@ -251,20 +251,17 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
         ),
       );
     }
-    
+
     return ClipOval(
       child: SizedBox(
         width: 300,
         height: 300,
-        child: OverflowBox(
-          alignment: Alignment.center,
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              width: 300,
-              height: 300 / _cameraController!.value.aspectRatio,
-              child: CameraPreview(_cameraController!),
-            ),
+        child: FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: _cameraController!.value.previewSize!.height,
+            height: _cameraController!.value.previewSize!.width,
+            child: CameraPreview(_cameraController!),
           ),
         ),
       ),
