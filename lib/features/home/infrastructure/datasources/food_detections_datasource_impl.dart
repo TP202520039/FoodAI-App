@@ -78,5 +78,40 @@ class FoodDetectionsDataSourceImpl extends FoodDetectionsDataSource {
           'Error fetching food detections: ${e.message}');
     }
   }
+  
+  @override
+  Future<FoodItem> analyzeFoodImage(String imagePath, String category, String detectionDate) async {
+        try {
+        final token = await storageService.getValue<String>('token');
+
+        // Convertir la imagen a MultipartFile
+        final imageMultipart = await MultipartFile.fromFile(
+          imagePath,
+          filename: imagePath.split('/').last
+        );
+
+        final formData = FormData.fromMap({
+          'image': imageMultipart,
+          'category': category,
+          'detectionDate': detectionDate,
+        });
+
+        final response = await dio.post(
+          '/food-detections/analyze',
+          data: formData,
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'multipart/form-data',
+            }
+          ),
+        );
+
+        return FoodItemMapper.fromJson(response.data);
+      } on DioException catch (e) {
+      throw Exception(
+          'Error analyzing food image: ${e.message}');
+    }
+  }
 
 }
