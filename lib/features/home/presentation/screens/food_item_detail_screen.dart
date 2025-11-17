@@ -154,10 +154,13 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 0, 0),
                   ),
                   decoration: const InputDecoration(
                     hintText: 'Nombre del plato',
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -165,9 +168,16 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
                 // Category (dropdown)
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
+                  dropdownColor: Color(0xFFFFFFFF),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
                   decoration: InputDecoration(
-                    labelText: 'Categoría',
                     border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,
@@ -281,7 +291,7 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
               _buildTotalItem(
                 icon: Icons.local_fire_department,
                 label: 'Calorías',
-                value: '${(totals?.totalCalories ?? 0).toStringAsFixed(0)}',
+                value: '${(totals?.totalCalories ?? 0).toStringAsFixed(0)}kcal',
                 color: Colors.orange[700]!,
               ),
               _buildTotalItem(
