@@ -163,7 +163,61 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
                 const SizedBox(height: 24),
                 
                 // Capture and gallery buttons
-                _buildActionButtons(),
+                SizedBox(
+                  height: 80,
+                  child: Stack(
+                    children: [
+                      // Capture button (centered in Column)
+                      Center(
+                        child: GestureDetector(
+                          onTap: _captureImage,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFFF5F2E8),
+                              border: Border.all(
+                                color: const Color(0xFF7D8B4E),
+                                width: 4,
+                              ),
+                            ),
+                            child: Center(
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFF7D8B4E),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Gallery button (to the right of center)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 220),
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFFF5F2E8)
+                            ),
+                            child: IconButton(
+                              onPressed: _pickFromGallery,
+                              icon: const Icon(Icons.photo_library),
+                              iconSize: 28,
+                              color: Color(0xFF7D8B4E),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
               ],
             ),
@@ -266,57 +320,6 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Gallery button
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey[300],
-          ),
-          child: IconButton(
-            onPressed: _pickFromGallery,
-            icon: const Icon(Icons.photo_library),
-            iconSize: 28,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(width: 40),
-        
-        // Capture button
-        GestureDetector(
-          onTap: _captureImage,
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(
-                color: Color(0xFF7D8B4E),
-                width: 4,
-              ),
-            ),
-            child: Center(
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFF7D8B4E),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
