@@ -144,6 +144,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
+                    color: Color(0xFF583C1C),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -201,23 +202,23 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildCategoryChip('DESAYUNO', 'Desayuno', Colors.amber[700]!),
+        _buildCategoryChip('DESAYUNO', 'Desayuno'),
         const SizedBox(width: 12),
-        _buildCategoryChip('ALMUERZO', 'Almuerzo', Colors.blue[700]!),
+        _buildCategoryChip('ALMUERZO', 'Almuerzo'),
         const SizedBox(width: 12),
-        _buildCategoryChip('CENA', 'Cena', Colors.purple[700]!),
+        _buildCategoryChip('CENA', 'Cena'),
       ],
     );
   }
 
-  Widget _buildCategoryChip(String value, String label, Color color) {
+  Widget _buildCategoryChip(String value, String label) {
     final isSelected = _selectedCategory == value;
     
     return FilterChip(
       label: Text(
         label,
         style: TextStyle(
-          color: isSelected ? Colors.white : color,
+          color: isSelected ? const Color(0xFFF5F2E8) : const Color(0xFF7D8B4E),
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -227,13 +228,13 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
           _selectedCategory = value;
         });
       },
-      selectedColor: color,
-      backgroundColor: color.withOpacity(0.15),
+      selectedColor: const Color(0xFF7D8B4E),
+      backgroundColor: const Color(0xFFF5F2E8),
       side: BorderSide(
-        color: color,
-        width: 1.5,
+        color: const Color(0xFF7D8B4E),
+        width: isSelected ? 2.0 : 1.5,
       ),
-      checkmarkColor: Colors.white,
+      checkmarkColor: const Color(0xFFF5F2E8),
     );
   }
 
@@ -299,7 +300,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
               shape: BoxShape.circle,
               color: Colors.white,
               border: Border.all(
-                color: Theme.of(context).primaryColor,
+                color: Color(0xFF7D8B4E),
                 width: 4,
               ),
             ),
@@ -309,7 +310,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
                 height: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).primaryColor,
+                  color: Color(0xFF7D8B4E),
                 ),
               ),
             ),
