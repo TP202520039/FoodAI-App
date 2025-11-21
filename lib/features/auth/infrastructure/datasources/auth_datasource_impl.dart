@@ -103,4 +103,35 @@ class AuthDatasourceImpl extends AuthDatasource {
       throw UnknownAuthException('Error al cerrar sesión: $e');
     }
   }
+  
+  @override
+  Future<User> registerWithEmailPassword(String email, String password) async {
+    
+    try {
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      
+      if (userCredential.user == null) {
+        throw UnknownAuthException('No se pudo obtener la información del usuario');
+      }
+      return userCredential.user!;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          throw EmailAlreadyInUseException();
+        case 'weak-password':
+          throw WeakPasswordException();
+        case 'invalid-email':
+          throw InvalidEmailException();
+        case 'network-request-failed':
+          throw NetworkException();
+        default:
+          throw UnknownAuthException(e.message);
+      }
+    } catch (e) {
+      throw UnknownAuthException('Error inesperado: $e');
+    }
+  }
 }

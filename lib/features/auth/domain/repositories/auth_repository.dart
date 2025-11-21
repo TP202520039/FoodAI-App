@@ -10,5 +10,6 @@ abstract class AuthRepository {
   // Métodos de autenticación
   Future<User> signInWithEmailPassword(String email, String password);
   Future<User> signInWithGoogle();
+  Future<User> registerWithEmailPassword(String email, String password);
   Future<void> signOut();
 }

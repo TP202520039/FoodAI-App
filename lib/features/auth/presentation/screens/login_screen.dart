@@ -82,6 +82,8 @@ class LoginScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
                 _LoginButton(),
                 const SizedBox(height: 13),
+                _RegisterButton(),
+                const SizedBox(height: 13),
                 _GoogleLoginButton(),
                 const SizedBox(height: 20),
                 Text (
@@ -143,6 +145,20 @@ class _LoginButton extends ConsumerWidget {
         onPressed: loginForm.isPosting
             ? null
             : ref.read(loginFormProvider.notifier).onFormSubmit,
+      ),
+    );
+  }
+}
+
+class _RegisterButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    
+    return SizedBox(
+      width: double.infinity,
+      child: CustomFilledButton(
+        text: 'REGISTRARSE',
+        buttonColor: const Color(0xFF7D8B4E),
       ),
     );
   }

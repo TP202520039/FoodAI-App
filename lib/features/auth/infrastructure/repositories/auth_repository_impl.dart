@@ -26,4 +26,9 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> signOut() async {
     return await _authDatasource.signOut();
   }
+  
+  @override
+  Future<User> registerWithEmailPassword(String email, String password) async {
+    return await _authDatasource.registerWithEmailPassword(email, password);
+  }
 }
