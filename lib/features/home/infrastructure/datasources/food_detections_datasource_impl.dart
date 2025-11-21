@@ -113,5 +113,21 @@ class FoodDetectionsDataSourceImpl extends FoodDetectionsDataSource {
           'Error analyzing food image: ${e.message}');
     }
   }
+  
+  @override
+  Future<void> deleteFoodDetection(int foodDetectionId) async {
+    try {
+      final token = await storageService.getValue<String>('token');
+
+      await dio.delete(
+        '/food-detections/$foodDetectionId',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+      
+    } on DioException catch (e) {
+      throw Exception(
+          'Error deleting food detection: ${e.message}');
+    }
+  }
 
 }

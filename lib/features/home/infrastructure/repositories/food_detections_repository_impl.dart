@@ -23,4 +23,9 @@ class FoodDetectionsRepositoryImpl extends FoodDetectionsRepository {
   Future<FoodItem> analyzeFoodImage(String imagePath, String category, String detectionDate) {
     return dataSource.analyzeFoodImage(imagePath, category, detectionDate);
   }
+  
+  @override
+  Future<void> deleteFoodDetection(int foodDetectionId) {
+    return dataSource.deleteFoodDetection(foodDetectionId);
+  }
 }

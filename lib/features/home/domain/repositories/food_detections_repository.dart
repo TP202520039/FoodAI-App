@@ -5,4 +5,5 @@ abstract class FoodDetectionsRepository {
   Future<List<FoodDetections>>  getFoodDetectionsByDate(String date); // date in 'YYYY-MM-DD' format
   Future<FoodItem> updateFoodItemComponents(FoodItem updatedFoodItem);
   Future<FoodItem> analyzeFoodImage(String imagePath, String category, String detectionDate);
+  Future<void> deleteFoodDetection(int foodDetectionId);
 }
