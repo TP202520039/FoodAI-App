@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodai/features/auth/domain/entities/auth_state.dart';
 import 'package:foodai/features/auth/presentation/providers/auth_provider.dart';
 import 'package:foodai/features/auth/presentation/screens/login_screen.dart';
+import 'package:foodai/features/auth/presentation/screens/register_screen.dart';
 import 'package:foodai/features/home/domain/entities/food_item.dart';
 import 'package:foodai/features/main/screens/main_screen.dart';
 import 'package:foodai/features/home/presentation/screens/screens.dart';
@@ -40,18 +41,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final authState = ref.read(authStateProvider);
       final isLoggedIn = authState.isAuthenticated;
       final isGoingToLogin = state.matchedLocation == '/login';
+      final isGoingToRegister = state.matchedLocation == '/register';
       final isChecking = authState.isChecking;
 
       // Si está verificando el estado, no redirigir
       if (isChecking) return null;
 
-      // Si no está logueado y no va a login → redirigir a login
-      if (!isLoggedIn && !isGoingToLogin) {
+      // Si no está logueado y no va a login o register → redirigir a login
+      if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister) {
         return '/login';
       }
 
-      // Si está logueado y va a login → redirigir a home
-      if (isLoggedIn && isGoingToLogin) {
+      // Si está logueado y va a login o register → redirigir a home
+      if (isLoggedIn && (isGoingToLogin || isGoingToRegister)) {
         return '/home';
       }
 
@@ -62,6 +64,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
 
       ShellRoute(

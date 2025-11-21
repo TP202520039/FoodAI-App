@@ -27,11 +27,17 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               CircleAvatar(
+                backgroundColor: Colors.grey[300],
                 radius: 50,
                 backgroundImage: user?.photoURL != null 
                     ? NetworkImage(user!.photoURL!)
-                    : const AssetImage('assets/images/logo.png') as ImageProvider,
-                backgroundColor: Colors.grey[300],
+                    : null,
+                child: user?.photoURL == null 
+                    ? Icon(
+                        Icons.person,
+                        size: 50,
+                      )
+                    : null,
               ),
               const SizedBox(height: 20),
               Text(

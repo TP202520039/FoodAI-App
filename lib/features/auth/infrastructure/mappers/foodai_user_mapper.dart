@@ -8,8 +8,8 @@ class FoodaiUserMapper {
       id: json['id'] as int,
       firebaseUid: json['firebaseUid'] as String,
       email: json['email'] as String,
-      displayName: json['displayName'] as String,
-      photoUrl: json['photoUrl'] as String,
+      displayName: json['displayName'] as String?,
+      photoUrl: json['photoUrl'] as String?,
       provider: json['provider'] as String,
       isActive: json['isActive'] as bool,
     );

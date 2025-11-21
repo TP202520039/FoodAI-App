@@ -1,19 +1,16 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foodai/features/auth/presentation/providers/auth_provider.dart';
+import 'package:foodai/features/auth/presentation/providers/register_provider.dart';
 import 'package:foodai/shared/widget/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends ConsumerWidget {
-
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Mostrar error si existe
-    ref.listen(loginFormProvider, (previous, next) {
+    ref.listen(registerFormProvider, (previous, next) {
       if (next.errorMessage != null && next.errorMessage!.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -22,6 +19,18 @@ class LoginScreen extends ConsumerWidget {
             behavior: SnackBarBehavior.floating,
           ),
         );
+      }
+
+      // Mostrar mensaje de éxito y regresar al login
+      if (next.isRegistered) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('¡Registro exitoso! Ya puedes iniciar sesión'),
+            backgroundColor: Colors.green.shade400,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        context.go('/login');
       }
     });
 
@@ -59,17 +68,17 @@ class LoginScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  "BIENVENIDO",
+                const Text(
+                  "CREAR CUENTA",
                   style: TextStyle(
-                    color: const Color(0xFF583C1C),
+                    color: Color(0xFF583C1C),
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  "Identifica tus comidas peruanas",
+                const Text(
+                  "Regístrate para comenzar",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -77,24 +86,16 @@ class LoginScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _EmailInput(),
+                const _EmailInput(),
                 const SizedBox(height: 13),
-                _PasswordInput(),
+                const _PasswordInput(),
+                const SizedBox(height: 13),
+                const _ConfirmPasswordInput(),
                 const SizedBox(height: 20),
-                _LoginButton(),
+                const _RegisterButton(),
                 const SizedBox(height: 13),
-                _RegisterButton(),
-                const SizedBox(height: 13),
-                _GoogleLoginButton(),
+                const _BackToLoginButton(),
                 const SizedBox(height: 20),
-                Text (
-                  "¿Olvidaste tu contraseña?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold
-                  ),
-                )
               ],
             ),
           ),
@@ -102,90 +103,98 @@ class LoginScreen extends ConsumerWidget {
       ),
     );
   }
-
 }
 
 class _EmailInput extends ConsumerWidget {
+  const _EmailInput();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginForm = ref.watch(loginFormProvider);
-    
+    final registerForm = ref.watch(registerFormProvider);
+
     return CustomTextFormField(
       label: 'Correo Electrónico',
       keyboardType: TextInputType.emailAddress,
-      onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
-      errorMessage: loginForm.isFormPosted ? loginForm.emailError : null,
+      onChanged: ref.read(registerFormProvider.notifier).onEmailChanged,
+      errorMessage: registerForm.isFormPosted ? registerForm.emailError : null,
     );
   }
 }
 
 class _PasswordInput extends ConsumerWidget {
+  const _PasswordInput();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginForm = ref.watch(loginFormProvider);
-    
+    final registerForm = ref.watch(registerFormProvider);
+
     return CustomTextFormField(
       label: 'Contraseña',
       obscureText: true,
-      onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
-      errorMessage: loginForm.isFormPosted ? loginForm.passwordError : null,
+      onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
+      errorMessage:
+          registerForm.isFormPosted ? registerForm.passwordError : null,
     );
   }
 }
 
-class _LoginButton extends ConsumerWidget {
+class _ConfirmPasswordInput extends ConsumerWidget {
+  const _ConfirmPasswordInput();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginForm = ref.watch(loginFormProvider);
+    final registerForm = ref.watch(registerFormProvider);
 
-    return SizedBox(
-      width: double.infinity,
-      child: CustomFilledButton(
-        text: loginForm.isPosting ? 'INICIANDO SESIÓN...' : 'INICIAR SESIÓN',
-        buttonColor: const Color(0xFF7D8B4E),
-        onPressed: loginForm.isPosting
-            ? null
-            : ref.read(loginFormProvider.notifier).onFormSubmit,
-      ),
+    return CustomTextFormField(
+      label: 'Confirmar Contraseña',
+      obscureText: true,
+      onChanged:
+          ref.read(registerFormProvider.notifier).onConfirmPasswordChanged,
+      errorMessage: registerForm.isFormPosted
+          ? registerForm.confirmPasswordError
+          : null,
     );
   }
 }
 
 class _RegisterButton extends ConsumerWidget {
+  const _RegisterButton();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
+    final registerForm = ref.watch(registerFormProvider);
+
     return SizedBox(
       width: double.infinity,
       child: CustomFilledButton(
-        text: 'REGISTRARSE',
+        text: registerForm.isPosting ? 'REGISTRANDO...' : 'CREAR CUENTA',
         buttonColor: const Color(0xFF7D8B4E),
-        onPressed: () => context.push('/register'),
+        onPressed: registerForm.isPosting
+            ? null
+            : ref.read(registerFormProvider.notifier).onFormSubmit,
       ),
     );
   }
 }
 
-class _GoogleLoginButton extends ConsumerWidget {
+class _BackToLoginButton extends ConsumerWidget {
+  const _BackToLoginButton();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginForm = ref.watch(loginFormProvider);
-
     return SizedBox(
       width: double.infinity,
-      child: CustomFilledButton(
-        text: 'Ingresar con Google',
-        buttonColor: Colors.white,
-        fontColor: Colors.black,
-        imagePath: 'assets/images/logo_google.png',
-        onPressed: loginForm.isPosting
-            ? null
-            : ref.read(loginFormProvider.notifier).signInWithGoogle,
+      child: TextButton(
+        onPressed: () => context.go('/login'),
+        child: const Text(
+          '¿Ya tienes cuenta? Inicia sesión',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
 }
-
-
-
-
