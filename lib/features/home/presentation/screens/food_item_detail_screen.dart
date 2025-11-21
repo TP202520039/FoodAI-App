@@ -5,6 +5,7 @@ import 'package:foodai/features/home/domain/entities/component.dart';
 import 'package:foodai/features/home/domain/entities/food_item.dart';
 import 'package:foodai/features/home/presentation/providers/food_detections_provider.dart';
 import 'package:foodai/features/home/presentation/providers/food_item_update_provider.dart';
+import 'package:foodai/features/home/presentation/providers/food_item_delete_provider.dart';
 import 'package:go_router/go_router.dart';
 
 class FoodItemDetailScreen extends ConsumerStatefulWidget {
@@ -100,6 +101,54 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
     }
   }
 
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Eliminar detección?'),
+        content: const Text('¿Estás seguro de que deseas eliminar esta detección?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _deleteDetection();
+    }
+  }
+
+  Future<void> _deleteDetection() async {
+    final result = await ref
+        .read(foodItemDeleteProvider.notifier)
+        .deleteFoodItem(widget.foodItem.id!);
+
+    if (!mounted) return;
+
+    if (result) {
+      // Refresh food detections list
+      ref.read(foodDetectionsProvider.notifier).refresh();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Detección eliminada exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      context.pop();
+    } else {
+      _showErrorDialog('Error al eliminar la detección. Intenta nuevamente.');
+    }
+  }
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -119,7 +168,9 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final isLoading = ref.watch(foodItemUpdateProvider);
+    final isUpdating = ref.watch(foodItemUpdateProvider);
+    final isDeleting = ref.watch(foodItemDeleteProvider);
+    final isLoading = isUpdating || isDeleting;
 
     return Scaffold(
       appBar: AppBar(
@@ -135,9 +186,10 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
         actions: [
           if (!isLoading)
             IconButton(
-              onPressed: _saveChanges,
-              icon: const Icon(Icons.save),
-              tooltip: 'Guardar cambios',
+              onPressed: _confirmDelete,
+              icon: const Icon(Icons.delete),
+              tooltip: 'Eliminar detección',
+              color: Colors.red,
             ),
         ],
       ),
