@@ -26,6 +26,7 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
   late String _selectedCategory;
   late List<Component> _components;
   final Set<int> _expandedComponents = {};
+  final Map<int, TextEditingController> _quantityControllers = {};
 
   @override
   void initState() {
@@ -44,11 +45,22 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
                 ))
             .toList() ??
         [];
+    
+    // Inicializar controllers para cada componente
+    for (int i = 0; i < _components.length; i++) {
+      _quantityControllers[i] = TextEditingController(
+        text: _components[i].quantityGrams?.toString() ?? '100',
+      );
+    }
   }
 
   @override
   void dispose() {
     _foodNameController.dispose();
+    // Liberar todos los controllers de cantidad
+    for (var controller in _quantityControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -467,10 +479,6 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
     required bool isExpanded,
     required ColorScheme colors,
   }) {
-    final quantityController = TextEditingController(
-      text: component.quantityGrams?.toString() ?? '100',
-    );
-
     return Container(
       decoration: BoxDecoration(
         color: colors.surface,
@@ -528,25 +536,23 @@ class _FoodItemDetailScreenState extends ConsumerState<FoodItemDetailScreen> {
                 children: [
                   // Quantity (editable)
                   TextField(
-                    controller: quantityController,
+                    controller: _quantityControllers[index],
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                     ],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Cantidad (gramos)',
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(),
                       suffixText: 'g',
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
                     ),
                     onChanged: (value) {
                       final intValue = int.tryParse(value);
-                      setState(() {
-                        component.quantityGrams = intValue;
-                      });
+                      component.quantityGrams = intValue;
                     },
                   ),
                   const SizedBox(height: 16),
