@@ -46,29 +46,34 @@ class RegisterFormState {
     String? email,
     String? password,
     String? confirmPassword,
-    String? emailError,
-    String? passwordError,
-    String? confirmPasswordError,
+    Object? emailError = const _Undefined(),
+    Object? passwordError = const _Undefined(),
+    Object? confirmPasswordError = const _Undefined(),
     bool? isValid,
     bool? isPosting,
     bool? isFormPosted,
     bool? isRegistered,
-    String? errorMessage,
+    Object? errorMessage = const _Undefined(),
   }) {
     return RegisterFormState(
       email: email ?? this.email,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
-      emailError: emailError ?? this.emailError,
-      passwordError: passwordError ?? this.passwordError,
-      confirmPasswordError: confirmPasswordError ?? this.confirmPasswordError,
+      emailError: emailError is _Undefined ? this.emailError : emailError as String?,
+      passwordError: passwordError is _Undefined ? this.passwordError : passwordError as String?,
+      confirmPasswordError: confirmPasswordError is _Undefined ? this.confirmPasswordError : confirmPasswordError as String?,
       isValid: isValid ?? this.isValid,
       isPosting: isPosting ?? this.isPosting,
       isFormPosted: isFormPosted ?? this.isFormPosted,
       isRegistered: isRegistered ?? this.isRegistered,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage is _Undefined ? this.errorMessage : errorMessage as String?,
     );
   }
+}
+
+// Clase helper para diferenciar entre null explícito y valor no proporcionado
+class _Undefined {
+  const _Undefined();
 }
 
 /// Notificador del formulario de registro
@@ -83,7 +88,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final emailError = _validateEmail(value);
     state = state.copyWith(
       email: value,
-      emailError: emailError,
+      emailError: state.isFormPosted ? emailError : null,
       isValid: _isFormValid(
         emailError: emailError,
         passwordError: state.passwordError,
@@ -102,8 +107,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     state = state.copyWith(
       password: value,
-      passwordError: passwordError,
-      confirmPasswordError: confirmPasswordError,
+      passwordError: state.isFormPosted ? passwordError : null,
+      confirmPasswordError: state.isFormPosted ? confirmPasswordError : null,
       isValid: _isFormValid(
         emailError: state.emailError,
         passwordError: passwordError,
@@ -119,7 +124,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     state = state.copyWith(
       confirmPassword: value,
-      confirmPasswordError: confirmPasswordError,
+      confirmPasswordError: state.isFormPosted ? confirmPasswordError : null,
       isValid: _isFormValid(
         emailError: state.emailError,
         passwordError: state.passwordError,
