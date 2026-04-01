@@ -61,7 +61,7 @@ class GoalsDataSourceImpl extends GoalsDataSource {
     final int? statusCode = exception.response?.statusCode;
 
     if (statusCode == 401) {
-      return 'Sesion invalida o expirada al $action';
+      return 'Sesión inválida o expirada al $action';
     }
 
     if (statusCode == 400) {
@@ -69,13 +69,13 @@ class GoalsDataSourceImpl extends GoalsDataSource {
       if (data is Map<String, dynamic> && data['message'] is String) {
         return data['message'] as String;
       }
-      return 'Datos invalidos al $action';
+      return 'Datos inválidos al $action';
     }
 
     if (statusCode == 404) {
       return 'Endpoint no encontrado al $action';
     }
 
-    return 'Ocurrio un error al $action: ${exception.message}';
+    return 'Ocurrió un error al $action: ${exception.message}';
   }
 }

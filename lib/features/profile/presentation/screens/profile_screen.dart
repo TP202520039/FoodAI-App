@@ -120,7 +120,7 @@ class _GoalsSection extends ConsumerWidget {
             children: [
               GoalsListTile(
                 icon: Icons.local_fire_department_rounded,
-                title: 'Calorias',
+                title: 'Calorías',
                 value: goals.dailyCaloriesGoal,
                 unit: 'kcal',
                 iconBackgroundColor: const Color(0xFFDDC68F),
@@ -128,7 +128,7 @@ class _GoalsSection extends ConsumerWidget {
                 onTap: () => _editGoal(
                   context: context,
                   ref: ref,
-                  title: 'Calorias',
+                  title: 'Calorías',
                   unit: 'kcal',
                   initialValue: goals.dailyCaloriesGoal,
                   min: 500,
@@ -139,7 +139,7 @@ class _GoalsSection extends ConsumerWidget {
               _GoalsDivider(),
               GoalsListTile(
                 icon: Icons.fitness_center,
-                title: 'Proteinas',
+                title: 'Proteínas',
                 value: goals.dailyProteinGoal,
                 unit: 'g',
                 iconBackgroundColor: const Color(0xFFAABB96),
@@ -147,7 +147,7 @@ class _GoalsSection extends ConsumerWidget {
                 onTap: () => _editGoal(
                   context: context,
                   ref: ref,
-                  title: 'Proteinas',
+                  title: 'Proteínas',
                   unit: 'g',
                   initialValue: goals.dailyProteinGoal,
                   min: 10,

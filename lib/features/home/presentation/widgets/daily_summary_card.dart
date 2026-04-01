@@ -49,7 +49,7 @@ class DailySummaryCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Resumen del dia',
+                'Resumen del día',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: _primaryColor,
@@ -160,7 +160,7 @@ class DailySummaryCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _MacroSummaryItem(
-                    label: 'Proteinas',
+                    label: 'Proteínas',
                     value: '${proteinConsumed.toStringAsFixed(1)} g',
                     progress: _buildProgress(
                       proteinConsumed,

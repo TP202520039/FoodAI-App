@@ -18,7 +18,7 @@ class GoalAssistantCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'No sabes cuanto deberias comer?',
+            '¿No sabes cuánto deberías comer?',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,

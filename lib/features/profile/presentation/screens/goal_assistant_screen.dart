@@ -112,7 +112,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Paso 1 - Datos fisicos',
+          'Paso 1 - Datos físicos',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -121,12 +121,12 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Necesitamos unos datos basicos para estimar tu gasto calorico diario.',
+          'Necesitamos unos datos básicos para estimar tu gasto calórico diario.',
           style: TextStyle(fontSize: 14, height: 1.5, color: Colors.black54),
         ),
         const SizedBox(height: 20),
         const Text(
-          'Genero',
+          'Género',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w700,
@@ -158,7 +158,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         _LabeledNumberField(
           label: 'Edad',
           controller: _ageController,
-          unit: 'anos',
+          unit: 'años',
         ),
         const SizedBox(height: 14),
         _LabeledNumberField(
@@ -206,7 +206,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Elige el nivel que mejor describe tu actividad fisica semanal.',
+          'Elige el nivel que mejor describe tu actividad física semanal.',
           style: TextStyle(fontSize: 14, height: 1.5, color: Colors.black54),
         ),
         const SizedBox(height: 20),
@@ -274,7 +274,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Selecciona el objetivo principal que quieres lograr con tu alimentacion.',
+          'Selecciona el objetivo principal que quieres lograr con tu alimentación.',
           style: TextStyle(fontSize: 14, height: 1.5, color: Colors.black54),
         ),
         const SizedBox(height: 20),
@@ -346,7 +346,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Calculada segun tus datos y lista para guardarse en tu perfil.',
+          'Calculada según tus datos y lista para guardarse en tu perfil.',
           style: TextStyle(fontSize: 14, height: 1.5, color: Colors.black54),
         ),
         const SizedBox(height: 20),
@@ -361,7 +361,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
           child: Column(
             children: [
               const Text(
-                'CALORIAS DIARIAS',
+                'CALORÍAS DIARIAS',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -385,7 +385,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
           children: [
             Expanded(
               child: _ResultMacroCard(
-                label: 'Proteinas',
+                label: 'Proteínas',
                 value: '${result.dailyProtein} g',
                 color: _accentColor,
               ),
@@ -416,7 +416,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Text(
-            'Podras ajustar estos valores manualmente desde tu perfil cuando quieras.',
+            'Podrás ajustar estos valores manualmente desde tu perfil cuando quieras.',
             style: TextStyle(fontSize: 12, height: 1.4, color: _accentColor),
           ),
         ),
@@ -477,7 +477,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
 
   void _goToActivityStep() {
     if (_gender == null) {
-      _showError('Selecciona tu genero.');
+      _showError('Selecciona tu género.');
       return;
     }
 
@@ -486,17 +486,17 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
     final double? height = double.tryParse(_heightController.text.trim());
 
     if (age == null || age < 10 || age > 100) {
-      _showError('Ingresa una edad valida entre 10 y 100 anos.');
+      _showError('Ingresa una edad válida entre 10 y 100 años.');
       return;
     }
 
     if (weight == null || weight < 20 || weight > 300) {
-      _showError('Ingresa un peso valido entre 20 y 300 kg.');
+      _showError('Ingresa un peso válido entre 20 y 300 kg.');
       return;
     }
 
     if (height == null || height < 100 || height > 250) {
-      _showError('Ingresa una altura valida entre 100 y 250 cm.');
+      _showError('Ingresa una altura válida entre 100 y 250 cm.');
       return;
     }
 
@@ -619,11 +619,11 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
       case GoalAssistantActivity.sedentary:
         return 'Poco o nada de ejercicio';
       case GoalAssistantActivity.light:
-        return '1 a 3 dias por semana';
+        return '1 a 3 días por semana';
       case GoalAssistantActivity.moderate:
-        return '3 a 5 dias por semana';
+        return '3 a 5 días por semana';
       case GoalAssistantActivity.veryActive:
-        return '6 a 7 dias por semana';
+        return '6 a 7 días por semana';
     }
   }
 
@@ -647,18 +647,18 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
       case GoalAssistantObjective.maintainWeight:
         return 'Mantener peso';
       case GoalAssistantObjective.gainMuscle:
-        return 'Ganar musculo';
+        return 'Ganar músculo';
     }
   }
 
   String _objectiveDescription(GoalAssistantObjective objective) {
     switch (objective) {
       case GoalAssistantObjective.loseWeight:
-        return 'Deficit calorico aproximado de 500 kcal';
+        return 'Déficit calórico aproximado de 500 kcal';
       case GoalAssistantObjective.maintainWeight:
         return 'Mantener tu consumo actual';
       case GoalAssistantObjective.gainMuscle:
-        return 'Superavit calorico aproximado de 300 kcal';
+        return 'Superávit calórico aproximado de 300 kcal';
     }
   }
 

@@ -115,7 +115,7 @@ class _GoalEditDialogState extends State<GoalEditDialog> {
 
     setState(() {
       if (value == null) {
-        _errorText = 'Ingresa un numero valido';
+        _errorText = 'Ingresa un número válido';
       } else if (value < widget.min || value > widget.max) {
         _errorText = 'Debe estar entre ${widget.min} y ${widget.max}';
       } else {
