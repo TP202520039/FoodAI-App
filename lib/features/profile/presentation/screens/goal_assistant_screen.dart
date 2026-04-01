@@ -19,6 +19,7 @@ class GoalAssistantScreen extends ConsumerStatefulWidget {
 
 class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
   static const Color _primaryColor = Color(0xFF08273A);
+  static const Color _backButtonColor = Color(0xFF443723);
   static const Color _accentColor = Color(0xFF7D8B4E);
   static const Color _softColor = Color(0xFFF5F2E8);
   static const Color _borderColor = Color(0xFFDDC68F);
@@ -226,11 +227,11 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: FilledButton(
                 onPressed: () => setState(() => _currentStep = 0),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: _primaryColor,
-                  side: const BorderSide(color: _borderColor),
+                style: FilledButton.styleFrom(
+                  backgroundColor: _backButtonColor,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -294,11 +295,11 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: FilledButton(
                 onPressed: () => setState(() => _currentStep = 1),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: _primaryColor,
-                  side: const BorderSide(color: _borderColor),
+                style: FilledButton.styleFrom(
+                  backgroundColor: _backButtonColor,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -424,11 +425,11 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: FilledButton(
                 onPressed: () => setState(() => _currentStep = 2),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: _primaryColor,
-                  side: const BorderSide(color: _borderColor),
+                style: FilledButton.styleFrom(
+                  backgroundColor: _backButtonColor,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -691,24 +692,28 @@ class _AssistantProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: List.generate(4, (index) {
-        final bool isCompleted = index < currentStep;
-        final bool isActive = index == currentStep;
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(4, (index) {
+          final bool isCompleted = index < currentStep;
+          final bool isActive = index == currentStep;
 
-        return Expanded(
-          child: Row(
+          return Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Container(
+              if (index > 0)
+                Container(
+                  width: 34,
                   height: 4,
-                  color: index == 0
-                      ? Colors.transparent
-                      : isCompleted || isActive
-                      ? _primaryColor
-                      : _pendingColor,
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: isCompleted || isActive
+                        ? _primaryColor
+                        : _pendingColor,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
                 ),
-              ),
               Container(
                 width: 28,
                 height: 28,
@@ -730,9 +735,9 @@ class _AssistantProgressIndicator extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
