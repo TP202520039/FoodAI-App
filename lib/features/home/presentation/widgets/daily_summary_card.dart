@@ -12,19 +12,19 @@ class DailySummaryCard extends StatelessWidget {
     this.isLoadingGoals = false,
   });
 
+  static final Color _caloriesColor = Colors.orange[700]!;
+  static final Color _proteinColor = Colors.red[400]!;
+  static final Color _fatColor = Colors.yellow[700]!;
+  static final Color _carbsColor = Colors.green[600]!;
+  static const Color _cardColor = Colors.white;
+  static const Color _softSurfaceColor = Color(0xFFF5F2E8);
+
   final int caloriesConsumed;
   final double proteinConsumed;
   final double fatConsumed;
   final double carbsConsumed;
   final UserGoals goals;
   final bool isLoadingGoals;
-
-  static const Color _primaryColor = Color(0xFF08273A);
-  static const Color _proteinColor = Color(0xFF7D8B4E);
-  static const Color _fatColor = Color(0xFFDDC68F);
-  static const Color _carbsColor = Color(0xFFAABB96);
-  static const Color _cardColor = Colors.white;
-  static const Color _softSurfaceColor = Color(0xFFF5F2E8);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class DailySummaryCard extends StatelessWidget {
                 'Resumen del día',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: _primaryColor,
+                  color: Color(0xFF08273A),
                 ),
               ),
               const Spacer(),
@@ -67,10 +67,10 @@ class DailySummaryCard extends StatelessWidget {
                 ),
                 child: Text(
                   'Meta ${goals.dailyCaloriesGoal} kcal',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: _primaryColor,
+                    color: Color(0xFF08273A),
                   ),
                 ),
               ),
@@ -78,9 +78,9 @@ class DailySummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           if (isLoadingGoals)
-            const LinearProgressIndicator(
+            LinearProgressIndicator(
               minHeight: 3,
-              color: _primaryColor,
+              color: _caloriesColor,
               backgroundColor: _softSurfaceColor,
             )
           else ...[
@@ -90,9 +90,9 @@ class DailySummaryCard extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.local_fire_department_rounded,
-                        color: _primaryColor,
+                        color: _caloriesColor,
                         size: 24,
                       ),
                       const SizedBox(width: 6),
@@ -102,10 +102,10 @@ class DailySummaryCard extends StatelessWidget {
                           children: [
                             Text(
                               '$caloriesConsumed kcal',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w600,
-                                color: _primaryColor,
+                                color: _caloriesColor,
                               ),
                             ),
                             const Text(
@@ -127,13 +127,14 @@ class DailySummaryCard extends StatelessWidget {
                   children: [
                     Text(
                       '$remainingCalories restantes',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: _proteinColor,
+                        color: _caloriesColor,
                       ),
                     ),
                     const SizedBox(height: 4),
+                    const Text('', style: TextStyle(fontSize: 12)),
                     Text(
                       '${(caloriesProgress * 100).round()}% de tu meta',
                       style: const TextStyle(
@@ -151,7 +152,7 @@ class DailySummaryCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: caloriesProgress,
                 minHeight: 8,
-                color: _primaryColor,
+                color: _caloriesColor,
                 backgroundColor: _softSurfaceColor,
               ),
             ),
