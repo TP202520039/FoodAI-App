@@ -178,7 +178,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
           child: FilledButton(
             onPressed: _goToActivityStep,
             style: FilledButton.styleFrom(
-              backgroundColor: _primaryColor,
+              backgroundColor: const Color(0xFF7D8B4E),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -236,7 +236,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text('Atras'),
+                child: const Text('Atrás'),
               ),
             ),
             const SizedBox(width: 12),
@@ -244,7 +244,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
               child: FilledButton(
                 onPressed: _goToObjectiveStep,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _primaryColor,
+                  backgroundColor: const Color(0xFF7D8B4E),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -304,7 +304,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text('Atras'),
+                child: const Text('Atrás'),
               ),
             ),
             const SizedBox(width: 12),
@@ -312,7 +312,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
               child: FilledButton(
                 onPressed: _calculateGoals,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _primaryColor,
+                  backgroundColor: const Color(0xFF7D8B4E),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -434,7 +434,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text('Atras'),
+                child: const Text('Atrás'),
               ),
             ),
             const SizedBox(width: 12),
@@ -451,7 +451,7 @@ class _GoalAssistantScreenState extends ConsumerState<GoalAssistantScreen> {
                         ),
                       ),
                 style: FilledButton.styleFrom(
-                  backgroundColor: _primaryColor,
+                  backgroundColor: const Color(0xFF7D8B4E),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -685,7 +685,7 @@ class _AssistantProgressIndicator extends StatelessWidget {
 
   final int currentStep;
 
-  static const Color _primaryColor = Color(0xFF08273A);
+  static const Color _primaryColor = Color(0xFF443723);
   static const Color _activeColor = Color(0xFF7D8B4E);
   static const Color _pendingColor = Color(0xFFDDC68F);
 
