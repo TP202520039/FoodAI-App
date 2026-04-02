@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodai/features/auth/domain/domain.dart';
@@ -34,7 +34,11 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final authCustomRepository = ref.read(authCustomRepositoryProvider);
   final keyValueStorageService = ref.read(keyValueStorageServiceProvider);
-  return AuthNotifier(authRepository, authCustomRepository, keyValueStorageService);
+  return AuthNotifier(
+    authRepository,
+    authCustomRepository,
+    keyValueStorageService,
+  );
 });
 
 /// Notificador del estado de autenticación
@@ -43,8 +47,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final AuthCustomRepository _authCustomRepository;
   final KeyValueStorageService _keyValueStorageService;
   StreamSubscription<User?>? _authSubscription;
+  StreamSubscription<User?>? _idTokenSubscription;
 
-  AuthNotifier(this._authRepository, this._authCustomRepository, this._keyValueStorageService) : super(const AuthState.checking()) {
+  AuthNotifier(
+    this._authRepository,
+    this._authCustomRepository,
+    this._keyValueStorageService,
+  ) : super(const AuthState.checking()) {
     _init();
   }
 
@@ -57,19 +66,44 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = const AuthState.unauthenticated();
       }
     });
+
+    _idTokenSubscription = FirebaseAuth.instance.idTokenChanges().listen((
+      user,
+    ) async {
+      if (user == null) {
+        await _keyValueStorageService.removeKey('token');
+        return;
+      }
+
+      final token = await user.getIdToken();
+      if (token != null) {
+        await _keyValueStorageService.setKeyValue('token', token);
+      }
+    });
+  }
+
+  Future<void> _saveUserToken(User user) async {
+    final token = await user.getIdToken();
+
+    if (token != null) {
+      await _keyValueStorageService.setKeyValue('token', token);
+    }
   }
 
   /// Inicia sesión con email y contraseña
   Future<void> signInWithEmailPassword(String email, String password) async {
     try {
       state = state.copyWith(status: AuthStatus.checking);
-      final user = await _authRepository.signInWithEmailPassword(email, password);
-      
+      final user = await _authRepository.signInWithEmailPassword(
+        email,
+        password,
+      );
+
       // Obtener y guardar token
       final token = await user.getIdToken();
       if (token != null) {
-        await _keyValueStorageService.setKeyValue("token", token);
-        
+        await _saveUserToken(user);
+
         // Sincronizar con backend
         try {
           final foodAiUser = await _authCustomRepository.sync(token);
@@ -97,13 +131,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = state.copyWith(status: AuthStatus.checking);
       final user = await _authRepository.signInWithGoogle();
-      
+
       // Obtener y guardar token
       final token = await user.getIdToken();
       if (token != null) {
-        await _keyValueStorageService.setKeyValue("token", token);
+        await _saveUserToken(user);
         print("✅ Token guardado correctamente");
-        
+
         // Sincronizar con backend
         try {
           final foodAiUser = await _authCustomRepository.sync(token);
@@ -142,6 +176,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   @override
   void dispose() {
     _authSubscription?.cancel();
+    _idTokenSubscription?.cancel();
     super.dispose();
   }
 }
@@ -151,10 +186,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 // ============================================================================
 
 /// Provider del formulario de login
-final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
-  final authNotifier = ref.read(authStateProvider.notifier);
-  return LoginFormNotifier(authNotifier);
-});
+final loginFormProvider =
+    StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
+      final authNotifier = ref.read(authStateProvider.notifier);
+      return LoginFormNotifier(authNotifier);
+    });
 
 /// Notificador del formulario de login
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
@@ -185,22 +221,24 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   /// Valida el email
   String? _validateEmail(String value) {
     if (value.isEmpty) return 'El correo es requerido';
-    
+
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
-    
+
     if (!emailRegex.hasMatch(value)) {
       return 'El correo no es válido';
     }
-    
+
     return null;
   }
 
   /// Valida la contraseña
   String? _validatePassword(String value) {
     if (value.isEmpty) return 'La contraseña es requerida';
-    if (value.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
+    if (value.length < 6) {
+      return 'La contraseña debe tener al menos 6 caracteres';
+    }
     return null;
   }
 
@@ -226,10 +264,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       await _authNotifier.signInWithEmailPassword(state.email, state.password);
       // El estado se actualiza automáticamente por el authStateProvider
     } on AuthException catch (e) {
-      state = state.copyWith(
-        isPosting: false,
-        errorMessage: e.message,
-      );
+      state = state.copyWith(isPosting: false, errorMessage: e.message);
     } catch (e) {
       state = state.copyWith(
         isPosting: false,
@@ -249,10 +284,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       // Usuario canceló, no mostrar error
       state = state.copyWith(isPosting: false);
     } on AuthException catch (e) {
-      state = state.copyWith(
-        isPosting: false,
-        errorMessage: e.message,
-      );
+      state = state.copyWith(isPosting: false, errorMessage: e.message);
     } catch (e) {
       state = state.copyWith(
         isPosting: false,

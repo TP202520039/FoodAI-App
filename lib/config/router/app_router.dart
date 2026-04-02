@@ -20,20 +20,17 @@ class GoRouterNotifier extends ChangeNotifier {
   final Ref _ref;
 
   GoRouterNotifier(this._ref) {
-    _ref.listen<AuthState>(
-      authStateProvider,
-      (previous, next) {
-        if (previous?.status != next.status) {
-          notifyListeners();
-        }
-      },
-    );
+    _ref.listen<AuthState>(authStateProvider, (previous, next) {
+      if (previous?.status != next.status) {
+        notifyListeners();
+      }
+    });
   }
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final notifier = ref.watch(goRouterNotifierProvider);
-  
+
   return GoRouter(
     refreshListenable: notifier,
     initialLocation: '/login',
@@ -61,10 +58,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
@@ -89,12 +83,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/profile',
             builder: (context, state) => const ProfileScreen(),
+            routes: [
+              GoRoute(
+                path: 'goal-assistant',
+                builder: (context, state) => const GoalAssistantScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/camera',
             builder: (context, state) => const CameraScreen(),
           ),
-        ]
+        ],
       ),
     ],
   );
