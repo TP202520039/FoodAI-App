@@ -30,7 +30,8 @@ class HomeScreen extends ConsumerWidget {
                   final _DailyConsumptionSummary dailyTotals =
                       _calculateDailyTotals(foodDetectionsList);
 
-                  final UserGoals goals = goalsAsync.value ?? const UserGoals();
+                  final UserGoals goals =
+                      goalsAsync.valueOrNull ?? const UserGoals();
 
                   return RefreshIndicator(
                     onRefresh: () async {

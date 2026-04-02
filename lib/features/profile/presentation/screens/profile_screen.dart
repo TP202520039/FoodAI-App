@@ -15,7 +15,7 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final goalsState = ref.watch(goalsProvider);
     final user = authState.user;
-    final UserGoals goals = goalsState.value ?? const UserGoals();
+    final UserGoals goals = goalsState.valueOrNull ?? const UserGoals();
 
     return Scaffold(
       body: SafeArea(
