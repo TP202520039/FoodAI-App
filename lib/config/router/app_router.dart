@@ -9,7 +9,12 @@ import 'package:foodai/features/main/screens/main_screen.dart';
 import 'package:foodai/features/home/presentation/screens/screens.dart';
 import 'package:foodai/features/profile/presentation/screens/screens.dart';
 import 'package:foodai/features/camera/presentation/screens/screens.dart';
+import 'package:foodai/features/benchmark/benchmark_screen.dart';
 import 'package:go_router/go_router.dart';
+
+// Latency benchmark screen (ICACIT Reviewer 1, see paper/benchmark_latencia/PROTOCOLO.md).
+// Only present in a build compiled with --dart-define=BENCH_MODE=true; absent otherwise.
+const bool _kBenchMode = bool.fromEnvironment('BENCH_MODE');
 
 // Notifier para actualizar GoRouter cuando cambia el estado de auth
 final goRouterNotifierProvider = Provider<GoRouterNotifier>((ref) {
@@ -63,6 +68,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
+      if (_kBenchMode)
+        GoRoute(
+          path: '/bench',
+          builder: (context, state) => const BenchmarkScreen(),
+        ),
 
       ShellRoute(
         builder: (context, state, child) => MainScreen(child: child),
