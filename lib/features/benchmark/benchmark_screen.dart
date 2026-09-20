@@ -25,7 +25,7 @@
 //    exist — this screen reuses the app's stored token exactly like every other
 //    authenticated call).
 // 5. Run with Wi-Fi OFF on 4G, then pull the CSV:
-//        adb shell run-as com.tp.foodai cat files/latency_<label>.csv > run_phone_4g.csv
+//        adb shell run-as com.example.foodai cat files/latency_<label>.csv > run_phone_4g.csv
 //    (adjust the applicationId if it differs) or tap "Share CSV" in the screen.
 //
 // SIDE EFFECTS: every successful call creates a real row in the production Postgres DB
