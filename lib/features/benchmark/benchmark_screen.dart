@@ -24,9 +24,13 @@
 // 4. Log in normally first, with a DEDICATED TEST ACCOUNT (Firebase Auth session must
 //    exist — this screen reuses the app's stored token exactly like every other
 //    authenticated call).
-// 5. Run with Wi-Fi OFF on 4G, then pull the CSV:
+// 5. Run with Wi-Fi OFF on 4G, then get the CSV off the phone with the "Share CSV"
+//    button (Drive, email, whatever's handy). `adb shell run-as` does NOT work on a
+//    --release build ("run-as: package not debuggable") — release sets
+//    android:debuggable=false. Only use run-as if you rebuilt with
+//    `flutter build apk --profile --dart-define=BENCH_MODE=true` instead of --release:
 //        adb shell run-as com.example.foodai cat files/latency_<label>.csv > run_phone_4g.csv
-//    (adjust the applicationId if it differs) or tap "Share CSV" in the screen.
+//    (applicationId confirmed in android/app/build.gradle.kts).
 //
 // SIDE EFFECTS: every successful call creates a real row in the production Postgres DB
 // and a real blob in Azure Blob Storage (same as any normal capture). This screen calls
