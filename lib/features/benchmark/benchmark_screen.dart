@@ -15,8 +15,10 @@
 // ----------
 // 1. Put 25 test-split images (one per class, distinct classes) in assets/bench/
 //    (declared in pubspec.yaml) and list them in `kAssets` below.
-// 2. Wire a route to this screen — see lib/config/router/app_router.dart, gated behind
-//    `bool.fromEnvironment('BENCH_MODE')` (this app had no --dart-define pattern before).
+// 2. The route is wired in lib/config/router/app_router.dart (GoRoute('/bench'), gated
+//    behind bool.fromEnvironment('BENCH_MODE')), and reachable from the app via a button
+//    on ProfileScreen ("Latency benchmark (BENCH_MODE)", same gate) — go to the Perfil
+//    tab after logging in to find it.
 // 3. Build and install:
 //        flutter build apk --release --dart-define=BENCH_MODE=true
 //        adb install -r build/app/outputs/flutter-apk/app-release.apk

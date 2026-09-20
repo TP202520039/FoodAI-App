@@ -7,6 +7,11 @@ import 'package:foodai/features/profile/presentation/widgets/widgets.dart';
 import 'package:foodai/shared/widget/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+// Only true in a build compiled with --dart-define=BENCH_MODE=true (see app_router.dart,
+// where the actual '/bench' route is registered under the same flag). Tree-shaken out of
+// every normal build, so this adds nothing to a production APK/IPA.
+const bool _kBenchMode = bool.fromEnvironment('BENCH_MODE');
+
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -80,6 +85,17 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               _GoalsSection(goalsState: goalsState, goals: goals),
+              if (_kBenchMode) ...[
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push('/bench'),
+                    icon: const Icon(Icons.speed),
+                    label: const Text('Latency benchmark (BENCH_MODE)'),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               _LogoutButton(),
             ],
